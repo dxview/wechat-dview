@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { db } from '~/store/v2/db';
+
 const usage = ref('');
+const clearing = ref(false);
 
 async function init() {
   const storageUsage = await navigator.storage.estimate();
@@ -15,6 +18,17 @@ async function init() {
   }
 }
 
+async function clearStorage() {
+  if (clearing.value) return;
+  clearing.value = true;
+  try {
+    await db.delete();
+    window.location.reload();
+  } catch {
+    clearing.value = false;
+  }
+}
+
 let timer: number;
 onMounted(() => {
   timer = window.setInterval(() => {
@@ -27,7 +41,16 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <p class="text-sm">
-    本地数据库占用约为 <span class="text-rose-500">{{ usage }}</span>
-  </p>
+  <div class="flex items-center gap-3">
+    <p class="text-sm">
+      本地缓存 <span class="text-rose-500">{{ usage }}</span>
+    </p>
+    <button
+      class="text-xs px-2 py-0.5 rounded border border-rose-300 text-rose-500 hover:bg-rose-50 disabled:opacity-50"
+      :disabled="clearing"
+      @click="clearStorage"
+    >
+      {{ clearing ? '清理中...' : '清空缓存' }}
+    </button>
+  </div>
 </template>
