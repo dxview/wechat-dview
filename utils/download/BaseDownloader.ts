@@ -1,6 +1,6 @@
 import { sleep, timeout } from '#shared/utils/helpers';
 import usePreferences from '~/composables/usePreferences';
-import { PUBLIC_PROXY_LIST } from '~/config/public-proxy';
+import { SELF_HOSTED_PROXY } from '~/config/self-hosted-proxy';
 import type { ParsedCredential } from '~/types/credential';
 import type { Preferences } from '~/types/preferences';
 import { bestConcurrencyCount } from '~/utils';
@@ -35,8 +35,8 @@ export class BaseDownloader {
 
     const proxies = (preferences.value as Preferences).privateProxyList || [];
     if (proxies.length === 0) {
-      // 如果没有配置私有代理，则使用公共代理
-      proxies.push(...PUBLIC_PROXY_LIST);
+      // 未配置私有代理时，默认使用自托管代理（仅转发微信域名，不外泄给第三方）
+      proxies.push(SELF_HOSTED_PROXY);
     }
 
     this.urls = [...urls].reverse();

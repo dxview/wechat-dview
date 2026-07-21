@@ -1,10 +1,11 @@
 import { StorageSerializers } from '@vueuse/core';
 import { MP_ORIGIN_TIMESTAMP } from '~/config';
+import { SELF_HOSTED_PROXY } from '~/config/self-hosted-proxy';
 import type { Preferences } from '~/types/preferences';
 
 const defaultOptions: Partial<Preferences> = {
   hideDeleted: true,
-  privateProxyList: [],
+  privateProxyList: [SELF_HOSTED_PROXY],
   privateProxyAuthorization: '',
   exportConfig: {
     dirname: '${title}',

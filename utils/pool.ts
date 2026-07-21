@@ -3,6 +3,7 @@ import PQueue from 'p-queue';
 import { v4 as uuid } from 'uuid';
 import { sleep } from '#shared/utils/helpers';
 import { PUBLIC_PROXY_LIST } from '~/config/public-proxy';
+import { SELF_HOSTED_PROXY } from '~/config/self-hosted-proxy';
 import type { DownloadableArticle } from '~/types/types';
 import type { AudioResource, VideoResource } from '~/types/video';
 
@@ -294,6 +295,10 @@ export async function downloads<T extends DownloadResource>(
     }
   } catch (e) {
     console.log(e);
+  }
+  if (privateProxy.length === 0) {
+    // 未配置私有代理时，默认使用自托管代理
+    privateProxy.push(SELF_HOSTED_PROXY);
   }
 
   // 初始化 pool
